@@ -7,7 +7,6 @@ import {
   ChevronRight, ChevronLeft, SkipForward, SkipBack,
   Play, Pause, Settings, Satellite, Radio
 } from 'lucide-react';
-import type { SystemAlert } from '../types/helios.types';
 
 interface SimulationSidebarProps {
   currentStep: number;
@@ -46,12 +45,12 @@ const SimulationSidebar: React.FC<SimulationSidebarProps> = ({
       {/* Logo / Brand */}
       <div className="p-4 border-b border-space-border">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-space-cyan to-space-purple flex items-center justify-center">
-            <Satellite size={16} className="text-space-text" />
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-space-cyan to-space-purple flex items-center justify-center shadow-md">
+            <Satellite size={16} className="text-white" />
           </div>
           <div>
-            <div className="text-sm font-bold text-space-text font-mono tracking-wider">HELIOS</div>
-            <div className="text-[9px] text-space-muted font-mono">ISRO · PS-14</div>
+            <div className="text-base font-extrabold text-space-text font-sans tracking-wide leading-none">HELIOS</div>
+            <div className="text-[9px] text-space-muted font-mono mt-0.5">ISRO · PS-14</div>
           </div>
         </div>
         <div className="mt-2 text-[9px] font-mono text-space-muted leading-tight">
@@ -64,15 +63,15 @@ const SimulationSidebar: React.FC<SimulationSidebarProps> = ({
         <img 
           src="/isro_satellite.png" 
           alt="ISRO HELIOS Satellite" 
-          className="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700" 
+          className="absolute inset-0 w-full h-full object-cover opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700" 
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-space-bg via-transparent to-transparent opacity-90" />
+        <div className="absolute inset-0 bg-gradient-to-t from-space-surface/75 via-transparent to-transparent" />
         <div className="absolute bottom-2 left-3 right-3 flex items-center justify-between">
             <div className="flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-space-cyan animate-pulse shadow-[0_0_5px_#58C8E3]" />
-                <span className="text-[9px] font-mono text-space-cyan tracking-wider">UPLINK ACTIVE</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-space-cyan animate-pulse shadow-[0_0_5px_#EA580C]" />
+                <span className="text-[9px] font-mono text-space-cyan font-bold tracking-wider">UPLINK ACTIVE</span>
             </div>
-            <span className="text-[8px] font-mono text-space-muted">L1 ORBIT</span>
+            <span className="text-[8px] font-mono text-space-muted font-bold">L1 ORBIT</span>
         </div>
       </div>
 

@@ -1,0 +1,19 @@
+{
+  "name": "helios-dashboard",
+  "version": "1.0.0",
+  "description": "HELIOS — Space Weather Forecast Dashboard | ISRO Hackathon PS-14",
+  "private": true,
+  "scripts": {
+    "install:all": "cd frontend && npm install && cd ../backend && npm install",
+    "build:frontend": "cd frontend && npm run build",
+    "build:backend": "cd backend && npm run build",
+    "build": "npm run build:frontend && npm run build:backend",
+    "start": "cd backend && node dist/index.js",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:backend": "cd backend && npm run dev",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\""
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

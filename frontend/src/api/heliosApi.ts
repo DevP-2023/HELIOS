@@ -9,7 +9,8 @@ import type {
   CDFUploadResult
 } from '../types/helios.types';
 
-const BASE = 'http://localhost:3001/api';
+// In dev, Vite proxies to localhost:3001. In production, frontend is served from the same server.
+const BASE = import.meta.env.DEV ? 'http://localhost:3001/api' : '/api';
 
 const api = axios.create({ baseURL: BASE, timeout: 10000 });
 

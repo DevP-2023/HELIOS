@@ -6,19 +6,19 @@ export default {
     extend: {
       colors: {
         space: {
-          bg:       'rgb(var(--color-bg) / <alpha-value>)',
-          surface:  'rgb(var(--color-surface) / 0.75)',
-          panel:    'rgb(var(--color-panel) / 0.6)',
-          border:   'rgb(var(--color-border) / 0.15)',
-          muted:    'rgb(var(--color-muted) / <alpha-value>)',
-          text:     'rgb(var(--color-text) / <alpha-value>)',
-          cyan:     'rgb(var(--color-cyan) / <alpha-value>)',
-          green:    'rgb(var(--color-green) / <alpha-value>)',
-          yellow:   'rgb(var(--color-yellow) / <alpha-value>)',
-          red:      'rgb(var(--color-red) / <alpha-value>)',
-          orange:   'rgb(var(--color-orange) / <alpha-value>)',
-          purple:   'rgb(var(--color-purple) / <alpha-value>)',
-          blue:     'rgb(var(--color-blue) / <alpha-value>)',
+          bg:       'var(--color-bg)',
+          surface:  'var(--color-surface)',
+          panel:    'var(--color-panel)',
+          border:   'var(--color-border)',
+          muted:    'var(--color-muted)',
+          text:     'var(--color-text)',
+          cyan:     'var(--color-cyan)',
+          green:    'var(--color-green)',
+          yellow:   'var(--color-yellow)',
+          red:      'var(--color-red)',
+          orange:   'var(--color-orange)',
+          purple:   'var(--color-purple)',
+          blue:     'var(--color-blue)',
         }
       },
       fontFamily: {

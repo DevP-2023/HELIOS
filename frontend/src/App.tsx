@@ -4,7 +4,7 @@
 // ============================================================
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Activity, Wind, Database, Wifi, WifiOff, Sun, Moon } from 'lucide-react';
+import { Activity, Wind, Database, Wifi, WifiOff, X } from 'lucide-react';
 
 import KPIStrip          from './components/KPIStrip';
 import FanChart          from './components/FanChart';
@@ -22,9 +22,9 @@ import type {
 const TOTAL_STEPS = 120;
 
 function alertBadgeColor(sev: SystemAlert['severity']): string {
-  if (sev === 'CRITICAL') return 'bg-red-900/50 border-space-red text-space-red';
-  if (sev === 'WARNING')  return 'bg-yellow-900/30 border-space-yellow text-space-yellow';
-  return 'bg-space-panel border-space-border text-space-muted';
+  if (sev === 'CRITICAL') return 'bg-red-50 border-red-200 text-red-700';
+  if (sev === 'WARNING')  return 'bg-amber-50 border-amber-200 text-amber-700';
+  return 'bg-slate-50 border-slate-200 text-slate-600';
 }
 
 const App: React.FC = () => {
@@ -36,7 +36,6 @@ const App: React.FC = () => {
   const [statusMsg,   setStatusMsg]     = useState<string>('Initializing...');
   const [backendOnline, setBackendOnline] = useState<boolean>(false);
   const [loading,     setLoading]       = useState<boolean>(true);
-  const [isDarkMode,  setIsDarkMode]    = useState<boolean>(true);
   const playIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // ── Data state ────────────────────────────────────────────
@@ -46,6 +45,7 @@ const App: React.FC = () => {
     tftBackbone: 0.25, piTcnCore: 0.25, liquidNeuralNet: 0.25, sslPretrainedBase: 0.25
   });
   const [systemAlerts,  setSystemAlerts]  = useState<SystemAlert[]>([]);
+  const [dismissedAlerts, setDismissedAlerts] = useState<string[]>([]);
   const [vsnWeights,    setVsnWeights]    = useState<VSNWeightTable | null>(null);
 
   // ── Fetch telemetry from backend ─────────────────────────
@@ -73,14 +73,10 @@ const App: React.FC = () => {
     });
   }, []);
 
-  // ── Theme toggle effect ──────────────────────────────────
+  // Force light mode
   useEffect(() => {
-    if (isDarkMode) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  }, [isDarkMode]);
+    document.documentElement.classList.remove('dark');
+  }, []);
 
   // ── Initial fetch ─────────────────────────────────────────
   useEffect(() => {
@@ -127,6 +123,11 @@ const App: React.FC = () => {
     return () => window.removeEventListener('helios-jump-step', handler);
   }, []);
 
+  // ── Reset dismissed alerts on step change ─────────────────
+  useEffect(() => {
+    setDismissedAlerts([]);
+  }, [currentStep]);
+
   // ── Handlers ──────────────────────────────────────────────
   const handleStepForward  = () => setCurrentStep(p => Math.min(p + 1, TOTAL_STEPS - 1));
   const handleStepBack     = () => setCurrentStep(p => Math.max(p - 1, 0));
@@ -144,11 +145,7 @@ const App: React.FC = () => {
 
   return (
     <>
-      <div className="space-bg fixed inset-0 z-0">
-        <img src="/sun_earth.png" alt="Sun Earth CME" className="absolute inset-0 w-full h-full object-cover opacity-10 mix-blend-multiply dark:opacity-20 dark:mix-blend-screen transition-all duration-500" />
-        <div className="absolute inset-0 bg-space-bg/80 dark:bg-space-bg/60 backdrop-blur-[1px] transition-colors duration-500" />
-        <div className="stars relative z-10" />
-      </div>
+      <div className="space-bg fixed inset-0 z-0" />
       <div className="flex h-screen bg-transparent overflow-hidden text-space-text relative z-10">
         {/* ── Sidebar ─────────────────────────────────────── */}
       <SimulationSidebar
@@ -166,22 +163,31 @@ const App: React.FC = () => {
 
       {/* ── Main content ────────────────────────────────── */}
       <main className="flex-1 flex flex-col overflow-hidden relative">
-        {/* Floating System Alerts (Top Right) */}
+        {/* Floating System Alerts (Top Right, Dismissible) */}
         <div className="absolute top-14 right-6 w-80 z-50 flex flex-col gap-2 pointer-events-none mt-2">
-          {systemAlerts.filter(a => a.severity === 'CRITICAL').length > 0 && (
-            <div className="self-end text-[9px] bg-red-900/50 text-space-red px-2 py-0.5 rounded-full font-mono alert-critical pointer-events-auto">
-              {systemAlerts.filter(a => a.severity === 'CRITICAL').length} CRITICAL
+          {systemAlerts.filter(a => !dismissedAlerts.includes(a.alertId) && a.severity === 'CRITICAL').length > 0 && (
+            <div className="self-end text-[9px] bg-red-100 border border-red-200 text-red-700 px-2 py-0.5 rounded-full font-mono alert-critical pointer-events-auto shadow-sm">
+              {systemAlerts.filter(a => !dismissedAlerts.includes(a.alertId) && a.severity === 'CRITICAL').length} CRITICAL
             </div>
           )}
-          {systemAlerts.filter(a => a.severity !== 'INFO').map(alert => (
+          {systemAlerts.filter(a => !dismissedAlerts.includes(a.alertId) && a.severity !== 'INFO').map(alert => (
             <div
               key={alert.alertId}
-              className={`border rounded-lg px-3 py-2.5 text-[10px] font-mono shadow-lg pointer-events-auto backdrop-blur-md transition-all ${alertBadgeColor(alert.severity)}`}
+              className={`border rounded-lg px-3 py-2 text-[10px] font-mono shadow-md pointer-events-auto backdrop-blur-md transition-all flex items-start justify-between gap-2 ${alertBadgeColor(alert.severity)}`}
             >
-              <div className="font-bold mb-1">
-                [{alert.severity}] {alert.parameter}
+              <div className="flex-1">
+                <div className="font-bold mb-0.5">
+                  [{alert.severity}] {alert.parameter}
+                </div>
+                <div className="leading-tight opacity-95">{alert.message}</div>
               </div>
-              <div className="leading-tight opacity-90">{alert.message}</div>
+              <button
+                onClick={() => setDismissedAlerts(prev => [...prev, alert.alertId])}
+                className="flex-shrink-0 p-0.5 rounded hover:bg-black/5 opacity-60 hover:opacity-100 transition-all"
+                title="Close Alert"
+              >
+                <X size={11} />
+              </button>
             </div>
           ))}
         </div>
@@ -210,13 +216,6 @@ const App: React.FC = () => {
               {backendOnline ? <Wifi size={11} /> : <WifiOff size={11} />}
               {backendOnline ? 'API ONLINE' : 'OFFLINE'}
             </div>
-            <button
-              onClick={() => setIsDarkMode(!isDarkMode)}
-              className="p-1.5 rounded-md hover:bg-space-border text-space-muted hover:text-space-text transition-colors border border-space-border"
-              title="Toggle Theme"
-            >
-              {isDarkMode ? <Sun size={14} /> : <Moon size={14} />}
-            </button>
           </div>
         </header>
 

@@ -39,18 +39,26 @@ const WindChart: React.FC<{
     </div>
     <ResponsiveContainer width="100%" height={height}>
       <LineChart data={data} margin={{ top: 4, right: 4, bottom: 0, left: -20 }}>
-        <CartesianGrid strokeDasharray="2 2" stroke="rgb(var(--color-border))" />
+        <CartesianGrid strokeDasharray="2 2" stroke="var(--color-border)" />
         <XAxis dataKey="label" hide />
-        <YAxis tick={{ fill: 'rgb(var(--color-muted))', fontSize: 9, fontFamily: 'JetBrains Mono' }} axisLine={false} tickLine={false} />
+        <YAxis tick={{ fill: 'var(--color-muted)', fontSize: 9, fontFamily: 'JetBrains Mono' }} axisLine={false} tickLine={false} />
         <Tooltip
-          contentStyle={{ background: 'rgb(var(--color-surface))', border: '1px solid rgb(var(--color-border))', borderRadius: 6, fontFamily: 'JetBrains Mono', fontSize: 10 }}
+          contentStyle={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: 6, fontFamily: 'JetBrains Mono', fontSize: 10 }}
           formatter={(v: any) => [`${Number(v).toFixed(2)} ${unit}`, label]}
           labelStyle={{ color }}
+          cursor={{ stroke: 'var(--color-cyan)', strokeWidth: 1.5, strokeDasharray: '3 3' }}
         />
         {refVal !== undefined && (
-          <ReferenceLine y={refVal} stroke="rgb(var(--color-border))" strokeDasharray="4 4" />
+          <ReferenceLine y={refVal} stroke="var(--color-border)" strokeDasharray="4 4" />
         )}
-        <Line type="monotone" dataKey="value" stroke={color} strokeWidth={1.5} dot={false} />
+        <Line 
+          type="monotone" 
+          dataKey="value" 
+          stroke={color} 
+          strokeWidth={1.5} 
+          dot={false} 
+          activeDot={{ r: 4, stroke: 'var(--color-surface)', strokeWidth: 1.5, fill: color }}
+        />
       </LineChart>
     </ResponsiveContainer>
   </div>
@@ -73,10 +81,10 @@ const DriversTab: React.FC<DriversTabProps> = ({ history, vsnWeights }) => {
       <div className="bg-space-surface glass-panel rounded-xl border border-space-border p-4">
         {/* Banner with Wind Satellite Image */}
         <div className="w-full h-20 relative rounded-lg overflow-hidden mb-4 border border-space-border">
-          <img src="/wind_satellite.png" alt="Wind Satellite" className="absolute inset-0 w-full h-full object-cover opacity-70 mix-blend-screen" />
-          <div className="absolute inset-0 bg-gradient-to-t from-space-bg via-space-bg/50 to-transparent" />
+          <img src="/wind_satellite.png" alt="Wind Satellite" className="absolute inset-0 w-full h-full object-cover opacity-15" />
+          <div className="absolute inset-0 bg-gradient-to-t from-space-bg via-space-bg/20 to-transparent" />
           <div className="absolute bottom-2 left-3 flex items-center gap-2">
-            <div className="w-6 h-6 rounded-md bg-space-cyan/20 flex items-center justify-center border border-space-cyan/30 backdrop-blur-md">
+            <div className="w-6 h-6 rounded-md bg-space-cyan/10 flex items-center justify-center border border-space-cyan/20 backdrop-blur-md">
               <Wind size={12} className="text-space-cyan" />
             </div>
             <div>
@@ -88,19 +96,19 @@ const DriversTab: React.FC<DriversTabProps> = ({ history, vsnWeights }) => {
 
         {/* CME phase color bar */}
         {latest && (
-          <div className={`text-[10px] font-mono px-2 py-1 rounded mb-3 inline-block
-            ${latest.cmePhase === 'EJECTA' ? 'bg-red-900/30 text-space-red' :
-              latest.cmePhase === 'SHEATH' ? 'bg-yellow-900/30 text-space-yellow' :
-              latest.cmePhase === 'RECOVERY' ? 'bg-blue-900/30 text-space-blue' :
-              'bg-green-900/30 text-space-green'}`}>
+          <div className={`text-[10px] font-mono px-2 py-1 rounded mb-3 inline-block font-bold
+            ${latest.cmePhase === 'EJECTA' ? 'bg-red-50 text-space-red border border-red-200' :
+              latest.cmePhase === 'SHEATH' ? 'bg-amber-50 text-space-yellow border border-yellow-200' :
+              latest.cmePhase === 'RECOVERY' ? 'bg-blue-50 text-space-blue border border-blue-200' :
+              'bg-green-50 text-space-green border border-green-200'}`}>
             Phase: {latest.cmePhase}
           </div>
         )}
 
-        <WindChart data={vswData}   color="#58C8E3" unit="km/s" label="Solar Wind Velocity (V_sw)" refVal={400} />
-        <WindChart data={bzData}    color="#F85149" unit="nT"   label="IMF B_z GSM (southward = negative)" refVal={0} />
-        <WindChart data={pdynData}  color="#D29922" unit="nPa"  label="Dynamic Pressure (P_dyn)" refVal={2} />
-        <WindChart data={newellData} color="#A371F7" unit="kV"  label="Newell Reconnection Rate (Φ_N)" />
+        <WindChart data={vswData}   color="var(--color-purple)" unit="km/s" label="Solar Wind Velocity (V_sw)" refVal={400} />
+        <WindChart data={bzData}    color="var(--color-red)" unit="nT"   label="IMF B_z GSM (southward = negative)" refVal={0} />
+        <WindChart data={pdynData}  color="var(--color-yellow)" unit="nPa"  label="Dynamic Pressure (P_dyn)" refVal={2} />
+        <WindChart data={newellData} color="var(--color-cyan)" unit="kV"  label="Newell Reconnection Rate (Φ_N)" />
       </div>
 
       {/* RIGHT: VSN Feature Importance Table */}

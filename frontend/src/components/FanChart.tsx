@@ -108,22 +108,25 @@ const FanChart: React.FC<FanChartProps> = ({ history, forecastSteps, threshold, 
 
       <ResponsiveContainer width="100%" height={300}>
         <ComposedChart data={data} margin={{ top: 10, right: 20, bottom: 10, left: 10 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="rgb(var(--color-border))" vertical={false} />
+          <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" vertical={true} />
           <XAxis
             dataKey="label"
-            tick={{ fill: 'rgb(var(--color-muted))', fontSize: 10, fontFamily: 'JetBrains Mono' }}
-            axisLine={{ stroke: 'rgb(var(--color-border))' }}
+            tick={{ fill: 'var(--color-muted)', fontSize: 10, fontFamily: 'JetBrains Mono' }}
+            axisLine={{ stroke: 'var(--color-border)' }}
             tickLine={false}
           />
           <YAxis
             domain={[yMin, yMax]}
-            tick={{ fill: 'rgb(var(--color-muted))', fontSize: 10, fontFamily: 'JetBrains Mono' }}
-            axisLine={{ stroke: 'rgb(var(--color-border))' }}
+            tick={{ fill: 'var(--color-muted)', fontSize: 10, fontFamily: 'JetBrains Mono' }}
+            axisLine={{ stroke: 'var(--color-border)' }}
             tickLine={false}
             tickFormatter={(v: number) => `10^${v.toFixed(1)}`}
-            label={{ value: 'log₁₀ Flux', angle: -90, position: 'insideLeft', fill: 'rgb(var(--color-muted))', fontSize: 10 }}
+            label={{ value: 'log₁₀ Flux', angle: -90, position: 'insideLeft', fill: 'var(--color-muted)', fontSize: 10 }}
           />
-          <Tooltip content={<CustomTooltip />} />
+          <Tooltip 
+            content={<CustomTooltip />} 
+            cursor={{ stroke: 'var(--color-cyan)', strokeWidth: 1.5, strokeDasharray: '3 3' }}
+          />
 
           {/* Danger threshold reference line */}
           <ReferenceLine
@@ -138,9 +141,9 @@ const FanChart: React.FC<FanChartProps> = ({ history, forecastSteps, threshold, 
           <Area
             type="monotone"
             dataKey="envelope"
-            fill="#58C8E3"
+            fill="var(--color-cyan)"
             stroke="none"
-            fillOpacity={0.12}
+            fillOpacity={0.06}
             name="P10–P90 Envelope"
             connectNulls={false}
           />
@@ -149,9 +152,9 @@ const FanChart: React.FC<FanChartProps> = ({ history, forecastSteps, threshold, 
           <Area
             type="monotone"
             dataKey="innerBand"
-            fill="#58C8E3"
+            fill="var(--color-cyan)"
             stroke="none"
-            fillOpacity={0.20}
+            fillOpacity={0.12}
             name="P25–P75 Band"
             connectNulls={false}
           />
@@ -160,10 +163,11 @@ const FanChart: React.FC<FanChartProps> = ({ history, forecastSteps, threshold, 
           <Line
             type="monotone"
             dataKey="p50"
-            stroke="#58C8E3"
+            stroke="var(--color-cyan)"
             strokeWidth={2}
             strokeDasharray="6 3"
             dot={false}
+            activeDot={{ r: 4, stroke: 'var(--color-surface)', strokeWidth: 1.5, fill: 'var(--color-cyan)' }}
             name="P50 Forecast"
             connectNulls={false}
           />
@@ -172,9 +176,10 @@ const FanChart: React.FC<FanChartProps> = ({ history, forecastSteps, threshold, 
           <Line
             type="monotone"
             dataKey="observed"
-            stroke="#FFFFFF"
-            strokeWidth={2}
+            stroke="var(--color-purple)"
+            strokeWidth={2.5}
             dot={false}
+            activeDot={{ r: 5, stroke: 'var(--color-surface)', strokeWidth: 2, fill: 'var(--color-purple)' }}
             name="Observed Flux"
             connectNulls={false}
           />
