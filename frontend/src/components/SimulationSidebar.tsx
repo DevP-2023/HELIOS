@@ -7,6 +7,7 @@ import {
   ChevronRight, ChevronLeft, SkipForward, SkipBack,
   Play, Pause, Settings, Satellite, Radio
 } from 'lucide-react';
+import type { SystemAlert } from '../types/helios.types';
 
 interface SimulationSidebarProps {
   currentStep: number;
